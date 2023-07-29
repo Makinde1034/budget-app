@@ -18,6 +18,7 @@ type Budget struct {
 	DaysLeft string `json:"daysLeft"`
 	AmountSpent int `json:"amountSpent"`
 	Color string `json:"color"`
+	Owner string `json:"owner"`
 
 }
 
@@ -34,7 +35,7 @@ func CreateBudget(budget *Budget) (error, *Budget)  {
 
 func UpdateBudget(amountSpent int,budgetId string) {
 	// var budget Budget
-	db.Model(Budget{}).Where("ID = ?", budgetId).Updates(Budget{AmountSpent: amountSpent})
+	db.Model(Budget{}).Where("Owner = ?", budgetId).Updates(Budget{AmountSpent: amountSpent})
 }
 
 func FetchBudgetByID(id string) Budget {
@@ -44,10 +45,10 @@ func FetchBudgetByID(id string) Budget {
 	return budget
 }
 
-func FetchUserBudgets() (error, []Budget) {
+func FetchUserBudgets(ownerId  string) (error, []Budget) {
 	var budgets []Budget;
 
-	result := db.Find(&budgets)
+	result := db.Where("Owner = ?", ownerId).Find(&budgets)
 
 	if result.Error != nil {
 		return result.Error, nil

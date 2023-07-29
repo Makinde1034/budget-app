@@ -13,13 +13,24 @@ import (
 func CreateBudget(w http.ResponseWriter, r *http.Request){          
 
 	budgetRequest := model.Budget{}
+	userId,_ := r.Context().Value("id").(string)
 
 	json.NewDecoder(r.Body).Decode(&budgetRequest)
+
+	budget := model.Budget{
+		Name : budgetRequest.Name,
+		Description : budgetRequest.Description,
+		StartDate : budgetRequest.StartDate,
+		EndDate : budgetRequest.EndDate,
+		Amount : budgetRequest.Amount,
+		Owner: userId,
+		Color: budgetRequest.Color,
+	}
  
-	err, resp := model.CreateBudget(&budgetRequest)
+	err, _ := model.CreateBudget(&budget)
                                                                      
 	if err != nil {   
-		fmt.Println("Erro occured", err)
+		fmt.Println("Error occured", err)
 		errResponse := struct{
 			Msg string `json:"msg"` 
 		}{ 
@@ -36,17 +47,14 @@ func CreateBudget(w http.ResponseWriter, r *http.Request){
 
 	json.NewEncoder(w).Encode(response)
 	w.WriteHeader(http.StatusOK)
-
-	fmt.Println(resp)
 }
 
 func UpdateBudget(w http.ResponseWriter, r *http.Request){          
 	activityRequest := model.Activity{}
 	
-
 	params := mux.Vars(r)
 	id := params["id"]
-
+	userId,_ := r.Context().Value("id").(string)
 	json.NewDecoder(r.Body).Decode(&activityRequest)
 
 	activity := model.Activity{
@@ -78,7 +86,7 @@ func UpdateBudget(w http.ResponseWriter, r *http.Request){
 
 
 	// update budget
-	model.UpdateBudget(activityRequest.Amount + budget.AmountSpent,id)
+	model.UpdateBudget(activityRequest.Amount + budget.AmountSpent,userId)
 
 	response := struct{
 		Msg string `json:"msg"`
@@ -112,14 +120,16 @@ func GetBudgetActivities(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	// fmt.Println(activities)
+	
 	json.NewEncoder(w).Encode(activities)
 
 }
 
 func GetUserBudgets(w http.ResponseWriter, r *http.Request){
+	
+	userId,_ := r.Context().Value("id").(string)
 
-	err, response := model.FetchUserBudgets()
+	err, response := model.FetchUserBudgets(userId)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

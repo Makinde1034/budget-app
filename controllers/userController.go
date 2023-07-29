@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-
 	"github.com/Makinde1034/budget-app/model"
 	"golang.org/x/crypto/bcrypt"
 
@@ -46,7 +45,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request){
 	if len(userExists) > 0 {
 		err := model.ErrMsg{Msg: "User with email already exists"}
 		
-		w.WriteHeader(http.StatusForbidden)   
+		w.WriteHeader(http.StatusConflict)   
 		json.NewEncoder(w).Encode(err)
 		return
 	}
@@ -94,6 +93,7 @@ func Login(w http.ResponseWriter, r *http.Request){
 
 	if len(userExists) == 0 {
 		errMsg := model.ErrMsg{Msg:  "Check your email and try again"}
+		w.WriteHeader(http.StatusConflict)   
 		json.NewEncoder(w).Encode(errMsg)
 		return
 	}
@@ -106,8 +106,7 @@ func Login(w http.ResponseWriter, r *http.Request){
 			Msg string `json:"msg"`
 		}{msg}
 
-		w.WriteHeader(http.StatusForbidden)                                
-
+		w.WriteHeader(http.StatusConflict)                               
 		json.NewEncoder(w).Encode(errMsg)
 		return
 	}
@@ -122,5 +121,36 @@ func Login(w http.ResponseWriter, r *http.Request){
 		token,
 	}
 
+	
+
 	json.NewEncoder(w).Encode(response) 
+
+	
+}
+
+func ValidateToken(w http.ResponseWriter, r *http.Request){
+	isTokenValid := true
+	validateTokenRequest := struct{
+		Token string `json:"token"`
+	}{
+
+	}
+
+	json.NewDecoder(r.Body).Decode(&validateTokenRequest)
+
+	_, msg := helpers.VerifyToken(validateTokenRequest.Token)
+
+	if msg != ""{
+		isTokenValid = false
+	}
+
+	response := struct{
+		IsTokenValid bool `json:"isTokenValid"`
+	}{
+		isTokenValid,
+	}
+
+	json.NewEncoder(w).Encode(response)
+
+
 }
