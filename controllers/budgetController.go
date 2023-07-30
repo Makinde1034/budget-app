@@ -54,7 +54,6 @@ func UpdateBudget(w http.ResponseWriter, r *http.Request){
 	
 	params := mux.Vars(r)
 	id := params["id"]
-	userId,_ := r.Context().Value("id").(string)
 	json.NewDecoder(r.Body).Decode(&activityRequest)
 
 	activity := model.Activity{
