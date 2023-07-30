@@ -86,7 +86,7 @@ func UpdateBudget(w http.ResponseWriter, r *http.Request){
 
 
 	// update budget
-	model.UpdateBudget(activityRequest.Amount + budget.AmountSpent,userId)
+	model.UpdateBudget(activityRequest.Amount + budget.AmountSpent,id)
 
 	response := struct{
 		Msg string `json:"msg"`
