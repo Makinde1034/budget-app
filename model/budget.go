@@ -35,7 +35,7 @@ func CreateBudget(budget *Budget) (error, *Budget)  {
 
 func UpdateBudget(amountSpent int,budgetId string) {
 	// var budget Budget
-	db.Model(Budget{}).Where("Owner = ?", budgetId).Updates(Budget{AmountSpent: amountSpent})
+	db.Model(Budget{}).Where("id = ?", budgetId).Updates(Budget{AmountSpent: amountSpent})
 }
 
 func FetchBudgetByID(id string) Budget {

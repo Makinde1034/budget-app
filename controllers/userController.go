@@ -13,7 +13,7 @@ import (
 )
 
 func hashPassword(password string) string {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14) 
       
 	if err != nil {
 		log.Panic(err)
@@ -89,7 +89,7 @@ func Login(w http.ResponseWriter, r *http.Request){
 
 	json.NewDecoder(r.Body).Decode(&loginRequest)
 
-	userExists,_ := model.FetchUserByEmail(loginRequest.Email)
+	userExists,_ := model.FetchUserByEmail(loginRequest.Email)      
 
 	if len(userExists) == 0 {
 		errMsg := model.ErrMsg{Msg:  "Check your email and try again"}
@@ -120,20 +120,17 @@ func Login(w http.ResponseWriter, r *http.Request){
 		userExists[0],
 		token,
 	}
-
-	
-
 	json.NewEncoder(w).Encode(response) 
 
 	
 }
 
-func ValidateToken(w http.ResponseWriter, r *http.Request){
+func ValidateToken(w http.ResponseWriter, r *http.Request){             
 	isTokenValid := true
 	validateTokenRequest := struct{
-		Token string `json:"token"`
+		Token string `json:"token"`                                  
 	}{
-
+                                                                                
 	}
 
 	json.NewDecoder(r.Body).Decode(&validateTokenRequest)

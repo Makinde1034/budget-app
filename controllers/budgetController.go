@@ -63,7 +63,7 @@ func UpdateBudget(w http.ResponseWriter, r *http.Request){
 	}
 
 	// create activity related to budget
-	err, resp := model.CreateActivity(&activity)
+	err, _ := model.CreateActivity(&activity)
 
 	if err != nil {
 		fmt.Println("Erro occured", err)
@@ -77,14 +77,10 @@ func UpdateBudget(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	fmt.Println(resp)
 
 	budget := model.FetchBudgetByID(id)
-
-	fmt.Println(budget.Amount,budget.AmountSpent)
-
-
 	// update budget
+	
 	model.UpdateBudget(activityRequest.Amount + budget.AmountSpent,id)
 
 	response := struct{

@@ -13,7 +13,6 @@ func Authentication(next http.Handler) http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 		
 		authorization := r.Header.Get("Authorization")
-		fmt.Println(authorization)
 		token := strings.Split(authorization," ")[1]
 
 		claims, msg := helpers.VerifyToken(token)
